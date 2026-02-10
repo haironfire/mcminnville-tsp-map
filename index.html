@@ -99,6 +99,7 @@
     <div class="toggle-row"><input type="checkbox" id="tog-corridors" checked> Key Corridors</div>
     <div class="toggle-row"><input type="checkbox" id="tog-points" checked> Key Locations</div>
     <div class="toggle-row"><input type="checkbox" id="tog-labels" checked> Area Labels</div>
+    <div class="toggle-row"><input type="checkbox" id="tog-streets"> Street Map Overlay</div>
   </div>
 
   <div class="legend-panel">
@@ -126,9 +127,19 @@ const UGB_COORDS = [[45.23409, -123.194641], [45.233902, -123.194531], [45.23380
 // === MAP INIT ===
 const map = L.map('map', { center: [45.2098, -123.1917], zoom: 13, zoomControl: false });
 L.control.zoom({ position: 'bottomright' }).addTo(map);
-L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
   attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 19
 }).addTo(map);
+
+// Street labels overlay (toggleable)
+var streetLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png', {
+  maxZoom: 19, pane: 'overlayPane'
+}).addTo(map);
+
+// OSM streets overlay — semi-transparent street network
+var osmStreets = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19, opacity: 0.3, attribution: '&copy; OpenStreetMap'
+});
 
 // === LAYER GROUPS ===
 const ugbLayer = L.layerGroup().addTo(map);
@@ -270,6 +281,7 @@ document.getElementById('tog-growth').addEventListener('change', function() { th
 document.getElementById('tog-corridors').addEventListener('change', function() { this.checked ? map.addLayer(corridorLayer) : map.removeLayer(corridorLayer); });
 document.getElementById('tog-points').addEventListener('change', function() { this.checked ? map.addLayer(pointsLayer) : map.removeLayer(pointsLayer); });
 document.getElementById('tog-labels').addEventListener('change', function() { this.checked ? map.addLayer(labelsLayer) : map.removeLayer(labelsLayer); });
+document.getElementById('tog-streets').addEventListener('change', function() { this.checked ? map.addLayer(osmStreets) : map.removeLayer(osmStreets); });
 </script>
 </body>
 </html>
